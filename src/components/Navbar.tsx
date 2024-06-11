@@ -23,10 +23,9 @@ const navLinks = [
     icon: <ChevronDownIcon className="w-5 h-5 mr-2" />, 
     subMenu: categories 
   },
-  { name: 'Guides', href: '/guides', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Completed Builds', href: '/completed-builds', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Trends', href: '/trends', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Forums', href: '/forums', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Руковдства', href: '/guides', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Готовые сборки', href: '/completed-builds', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Популярное', href: '/trends', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
 ];
 
 export default function Navbar() {

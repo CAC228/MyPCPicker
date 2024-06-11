@@ -45,7 +45,7 @@ const CategoryPage = async ({ params }: Params) => {
   const productsWithPrices: ProductType[] = await Promise.all(
     productData.map(async (product) => {
       const prices: PriceType[] = await Price.find({ partNumber: product.partNumber }).lean();
-      return { ...product, prices };
+      return JSON.parse(JSON.stringify({ ...product, prices }));
     })
   );
 
