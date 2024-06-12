@@ -1,3 +1,4 @@
+// src/app/builder/page.tsx
 "use client";
 import React from 'react';
 import { useBuild } from '../../context/BuildContext';
@@ -46,7 +47,7 @@ const BuildPage = () => {
                 <td className="border p-2">
                   {build[component.slug] ? (
                     <div className="flex items-center space-x-2">
-                      <img src={build[component.slug].image} alt={build[component.slug].name} className="w-12 h-12 object-cover" />
+                      <img src={build[component.slug].image_url} alt={build[component.slug].name} className="w-12 h-12 object-cover" />
                       <span>{build[component.slug].name}</span>
                     </div>
                   ) : (

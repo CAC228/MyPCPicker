@@ -7,8 +7,12 @@ interface PriceListProps {
 }
 
 const PriceList: React.FC<PriceListProps> = ({ prices }) => {
+  if (!prices || prices.length === 0) {
+    return <p className="text-gray-500">Нет доступных цен.</p>;
+  }
+
   return (
-    <div>
+    <div className="bg-white shadow rounded-lg p-4">
       <h2 className="text-2xl font-bold mb-4">Цены</h2>
       <ul className="space-y-2">
         {prices.map((price, index) => (

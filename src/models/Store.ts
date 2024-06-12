@@ -1,5 +1,5 @@
 // src/models/Store.ts
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IStore extends Document {
   name: string;
@@ -11,5 +11,4 @@ const StoreSchema: Schema = new Schema({
   url: { type: String, required: true },
 });
 
-const Store: Model<IStore> = mongoose.models.Store || mongoose.model<IStore>('Store', StoreSchema);
-export default Store;
+export default mongoose.models.Store || mongoose.model<IStore>('Store', StoreSchema);

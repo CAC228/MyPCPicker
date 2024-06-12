@@ -1,3 +1,4 @@
+// src/app/product/[partNumber]/page.tsx
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -19,7 +20,7 @@ interface ProductDetailPageProps {
 
 const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
   const [product, setProduct] = useState<IProduct | null>(null);
-  const [prices, setPrices] = useState<PriceType[]>([]);
+  const [prices, setPrices] = useState<(PriceType & { store: { name: string, url: string } })[]>([]);
   const { addToBuild } = useBuild();
 
   useEffect(() => {
@@ -29,7 +30,11 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
         setProduct(productResponse.data[0]);
 
         const pricesResponse = await axios.get(`/api/prices?partNumber=${params.partNumber}`);
-        setPrices(pricesResponse.data);
+        if (pricesResponse.status === 200) {
+          setPrices(pricesResponse.data);
+        } else {
+          setPrices([]);
+        }
       } catch (error) {
         console.error('Error fetching product or prices:', error);
       }
@@ -40,7 +45,7 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
 
   const handleAddToBuild = () => {
     if (product) {
-      addToBuild(product as any);
+      addToBuild(product);
     }
   };
 
@@ -67,8 +72,10 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
             <PriceAlert />
           </div>
         </div>
-        <div className="mt-8"></div>
-        <div className="mt-8"></div>
+        <div className="mt-8">
+        </div>
+        <div className="mt-8">
+        </div>
       </main>
       <Footer />
     </div>
