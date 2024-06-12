@@ -1,11 +1,12 @@
+// src/components/Navbar.tsx
 "use client";
 
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon, ChartBarIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, HomeIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon, ChartBarIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
 import { useBuild } from '../context/BuildContext';
-import { useRouter } from 'next/navigation';
+import { useAuth, UserButton } from '@clerk/nextjs';
 
 const categories = [
   { name: 'Видеокарты', slug: 'gpu', icon: 'nav-videocard-2023.png' },
@@ -28,22 +29,15 @@ const navLinks = [
   },
   { name: 'Руководства', href: '/guides', icon: <BookOpenIcon className="w-5 h-5 mr-2" /> },
   { name: 'Готовые сборки', href: '/completed-builds', icon: <BuildingLibraryIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Популярное', href: '/trends', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Форумы', href: '/forums', icon: <ChatBubbleBottomCenterTextIcon className="w-5 h-5 mr-2" /> },
 ];
 
 export default function Navbar() {
   const { build } = useBuild();
-  const router = useRouter();
+  const { isSignedIn } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleCategoryChange = (category: string) => {
-    router.push(`/category/${category}`);
-    setIsMenuOpen(false);  // Закрываем меню после выбора категории
   };
 
   return (
@@ -77,13 +71,12 @@ export default function Navbar() {
                         {link.subMenu.map((category) => (
                           <Menu.Item key={category.slug}>
                             {({ active }) => (
-                              <button
-                                onClick={() => handleCategoryChange(category.slug)}
-                                className={`flex items-center p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}
-                              >
-                                <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
-                                <span className="text-white">{category.name}</span>
-                              </button>
+                              <Link href={`/category/${category.slug}`} legacyBehavior>
+                                <a className={`flex items-center p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}>
+                                  <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
+                                  <span className="text-white">{category.name}</span>
+                                </a>
+                              </Link>
                             )}
                           </Menu.Item>
                         ))}
@@ -114,6 +107,18 @@ export default function Navbar() {
               <span>Сборка ({Object.keys(build).length})</span>
             </a>
           </Link>
+          {!isSignedIn ? (
+            <div className="flex items-center space-x-4">
+              <Link href="/login" legacyBehavior>
+                <a className="text-lg">Вход</a>
+              </Link>
+              <Link href="/signup" legacyBehavior>
+                <a className="text-lg">Регистрация</a>
+              </Link>
+            </div>
+          ) : (
+            <UserButton />
+          )}
         </div>
       </div>
     </nav>

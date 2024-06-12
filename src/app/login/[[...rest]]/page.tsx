@@ -1,4 +1,5 @@
-// src/app/login/page.tsx
+// src/app/login/[[...rest]]/page.tsx
+
 import React from 'react';
 import { SignIn } from '@clerk/nextjs';
 

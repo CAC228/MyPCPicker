@@ -1,4 +1,5 @@
-// src/app/signup/page.tsx
+// src/app/signup/[[...rest]]/page.tsx
+
 import React from 'react';
 import { SignUp } from '@clerk/nextjs';
 
