@@ -1,21 +1,36 @@
-import mongoose, { Schema, Document } from 'mongoose';
+// src/models/Product.ts
+import mongoose, { Document, Model, Schema } from 'mongoose';
 
-interface IProduct extends Document {
+export interface IProduct extends Document {
   name: string;
-  specs: string;
-  url: string;
-  type: string;
-  image: string;
-  partNumber: string;
+  category: string;
+  brand: string;
+  productModel: string;
+  description: string;
+  image_url: string;
+  specifications: {
+    partNumber: string;
+    [key: string]: string;
+  };
+  created_at: Date;
+  updated_at: Date;
 }
 
 const ProductSchema: Schema = new Schema({
   name: { type: String, required: true },
-  specs: { type: String, required: true },
-  url: { type: String, required: true },
-  type: { type: String, required: true },
-  image: { type: String, required: true },
-  partNumber: { type: String, required: true },
+  category: { type: String, required: true },
+  brand: { type: String, required: true },
+  model: { type: String, required: true },
+  description: { type: String, required: true },
+  image_url: { type: String, required: true },
+  specifications: {
+    partNumber: { type: String, required: true },
+    type: Map,
+    of: String,
+  },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+export default Product;

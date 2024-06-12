@@ -1,17 +1,21 @@
-import mongoose, { Schema, Document } from 'mongoose';
+// src/models/Price.ts
+import mongoose, { Document, Model, Schema } from 'mongoose';
 
-interface IPrice extends Document {
+export interface IPrice extends Document {
   partNumber: string;
-  price: string;
-  site: string;
-  link: string;
+  store_id: number;
+  price: number;
+  date: Date;
+  product_url: string;
 }
 
 const PriceSchema: Schema = new Schema({
-  partNumber: { type: String, ref: 'Product', required: true },
-  price: { type: String, required: true },
-  site: { type: String, required: true },
-  link: { type: String, required: true },
+  partNumber: { type: String, required: true },
+  store_id: { type: Number, ref: 'Store', required: true },
+  price: { type: Number, required: true },
+  date: { type: Date, required: true },
+  product_url: { type: String, required: true },
 });
 
-export default mongoose.models.Price || mongoose.model<IPrice>('Price', PriceSchema);
+const Price: Model<IPrice> = mongoose.models.Price || mongoose.model<IPrice>('Price', PriceSchema);
+export default Price;

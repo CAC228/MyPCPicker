@@ -3,8 +3,9 @@
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, ShoppingCartIcon, HomeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { useCart } from '../context/CartContext';
+import { ChevronDownIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon, ChartBarIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
+import { useBuild } from '../context/BuildContext';
+import { useRouter } from 'next/navigation';
 
 const categories = [
   { name: 'Видеокарты', slug: 'gpu', icon: 'nav-videocard-2023.png' },
@@ -12,28 +13,37 @@ const categories = [
   { name: 'Материнские платы', slug: 'motherboards', icon: 'nav-motherboard-2023.png' },
   { name: 'Оперативная память', slug: 'ram', icon: 'nav-memory-2023.png' },
   { name: 'Накопители', slug: 'storage', icon: 'nav-ssd-2023.png' },
-  // Добавьте другие категории здесь
+  { name: 'Блоки питания', slug: 'power-supplies', icon: 'nav-powersupply-2023.png' },
+  { name: 'Корпуса', slug: 'cases', icon: 'nav-case-2023.png' },
+  { name: 'Охлаждение CPU', slug: 'cpu-coolers', icon: 'nav-cpucooler-2023.png' },
 ];
 
 const navLinks = [
-  { name: 'Builder', href: '/builder', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-  { 
-    name: 'Products', 
-    href: '#', 
-    icon: <ChevronDownIcon className="w-5 h-5 mr-2" />, 
-    subMenu: categories 
+  { name: 'Сборка', href: '/build', icon: <WrenchScrewdriverIcon className="w-5 h-5 mr-2" /> },
+  {
+    name: 'Продукты',
+    href: '#',
+    icon: <ChevronDownIcon className="w-5 h-5 mr-2" />,
+    subMenu: categories
   },
-  { name: 'Руковдства', href: '/guides', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Готовые сборки', href: '/completed-builds', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Популярное', href: '/trends', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Руководства', href: '/guides', icon: <BookOpenIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Готовые сборки', href: '/completed-builds', icon: <BuildingLibraryIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Популярное', href: '/trends', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Форумы', href: '/forums', icon: <ChatBubbleBottomCenterTextIcon className="w-5 h-5 mr-2" /> },
 ];
 
 export default function Navbar() {
-  const { cart } = useCart();
+  const { build } = useBuild();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    router.push(`/category/${category}`);
+    setIsMenuOpen(false);  // Закрываем меню после выбора категории
   };
 
   return (
@@ -46,17 +56,15 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <div key={link.name} className="relative">
               {link.subMenu ? (
-                <>
-                  <button 
-                    onClick={toggleMenu} 
-                    className="flex items-center px-3 py-2 text-white hover:bg-gray-700 rounded-md focus:outline-none"
-                  >
-                    {link.icon}
-                    {link.name}
-                  </button>
+                <Menu as="div" className="relative inline-block text-left">
+                  <div>
+                    <Menu.Button className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                      {link.icon}
+                      {link.name}
+                    </Menu.Button>
+                  </div>
                   <Transition
                     as={Fragment}
-                    show={isMenuOpen}
                     enter="transition ease-out duration-100"
                     enterFrom="transform opacity-0 scale-95"
                     enterTo="transform opacity-100 scale-100"
@@ -64,20 +72,25 @@ export default function Navbar() {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <div className="absolute left-0 top-full mt-2 w-72 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg z-10">
-                      <div className="py-1">
+                    <Menu.Items className="absolute z-10 mt-2 w-72 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-700">
+                      <div className="p-4 grid grid-cols-2 gap-4">
                         {link.subMenu.map((category) => (
-                          <Link href={`/category/${category.slug}`} key={category.slug} legacyBehavior>
-                            <a className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-                              <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-6 h-6 mr-2" />
-                              {category.name}
-                            </a>
-                          </Link>
+                          <Menu.Item key={category.slug}>
+                            {({ active }) => (
+                              <button
+                                onClick={() => handleCategoryChange(category.slug)}
+                                className={`flex items-center p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}
+                              >
+                                <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
+                                <span className="text-white">{category.name}</span>
+                              </button>
+                            )}
+                          </Menu.Item>
                         ))}
                       </div>
-                    </div>
+                    </Menu.Items>
                   </Transition>
-                </>
+                </Menu>
               ) : (
                 <Link href={link.href} legacyBehavior>
                   <a className="flex items-center px-3 py-2 text-white hover:bg-gray-700 rounded-md">
@@ -95,10 +108,10 @@ export default function Navbar() {
               <MagnifyingGlassIcon className="w-6 h-6" />
             </a>
           </Link>
-          <Link href="/cart" legacyBehavior>
+          <Link href="/builder" legacyBehavior>
             <a className="flex items-center space-x-2 text-lg">
-              <ShoppingCartIcon className="w-6 h-6" />
-              <span>Корзина ({cart.length})</span>
+              <WrenchScrewdriverIcon className="w-6 h-6" />
+              <span>Сборка ({Object.keys(build).length})</span>
             </a>
           </Link>
         </div>

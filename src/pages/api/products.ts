@@ -8,11 +8,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await dbConnect();
 
   try {
-    const products = await Product.find({});
-    const productsWithPrices = await Promise.all(products.map(async (product) => {
-      const prices = await Price.find({ productId: product._id });
-      return { ...product.toObject(), prices };
-    }));
+    const { partNumber, category } = req.query;
+    let products;
+
+    if (partNumber) {
+      products = await Product.find({ 'specifications.partNumber': partNumber }).lean();
+    } else if (category) {
+      products = await Product.find({ category }).lean();
+    } else {
+      products = await Product.find({}).lean();
+    }
+
+    const productsWithPrices = await Promise.all(
+      products.map(async (product) => {
+        const prices = await Price.find({ partNumber: product.specifications.partNumber }).lean();
+        return { ...product, prices };
+      })
+    );
 
     res.status(200).json(productsWithPrices);
   } catch (error) {
