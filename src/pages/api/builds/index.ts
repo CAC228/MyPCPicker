@@ -1,7 +1,7 @@
 // src/pages/api/builds/index.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/mongoose';
-import Build, { IBuild } from '../../../models/Build';
+import Build, { IBuild } from '../../../models/SavedBuild';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();

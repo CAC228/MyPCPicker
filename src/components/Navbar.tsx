@@ -1,10 +1,18 @@
 // src/components/Navbar.tsx
-"use client";
 
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, HomeIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon, ChartBarIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
+import {
+  ChevronDownIcon,
+  MagnifyingGlassIcon,
+  WrenchScrewdriverIcon,
+  BookOpenIcon,
+  BuildingLibraryIcon,
+  ChartBarIcon,
+  HeartIcon,
+  ChatBubbleBottomCenterTextIcon
+} from '@heroicons/react/24/solid';
 import { useBuild } from '../context/BuildContext';
 import { useAuth, UserButton } from '@clerk/nextjs';
 
@@ -20,15 +28,18 @@ const categories = [
 ];
 
 const navLinks = [
-  { name: 'Сборка', href: '/build', icon: <WrenchScrewdriverIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Сборка', href: '/builder', icon: <WrenchScrewdriverIcon className="w-5 h-5 mr-2" /> },
   {
     name: 'Продукты',
     href: '#',
     icon: <ChevronDownIcon className="w-5 h-5 mr-2" />,
-    subMenu: categories
+    subMenu: categories,
   },
   { name: 'Руководства', href: '/guides', icon: <BookOpenIcon className="w-5 h-5 mr-2" /> },
   { name: 'Готовые сборки', href: '/completed-builds', icon: <BuildingLibraryIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Отзывы', href: '/reviews', icon: <ChatBubbleBottomCenterTextIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Избранное', href: '/favorites', icon: <HeartIcon className="w-5 h-5 mr-2" /> },
+  { name: 'Сравнение', href: '/compare', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
 ];
 
 export default function Navbar() {
@@ -96,7 +107,7 @@ export default function Navbar() {
           ))}
         </div>
         <div className="flex items-center space-x-4">
-          <Link href="#" legacyBehavior>
+          <Link href="/search" legacyBehavior>
             <a className="text-lg">
               <MagnifyingGlassIcon className="w-6 h-6" />
             </a>
