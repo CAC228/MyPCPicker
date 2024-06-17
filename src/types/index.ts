@@ -25,3 +25,30 @@ export interface ProductType {
 }
 
 export interface IProduct extends ProductType {}
+
+export interface IReview {
+  _id: string;
+  productId: string;
+  userId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface IComponent {
+  productId: {
+    _id: string;
+    name: string;
+  };
+  type: string;
+}
+
+export interface IBuild {
+  _id: string;
+  userId: string;
+  components: IComponent[];
+}
+
+export interface IUser {
+  id: string;
+}

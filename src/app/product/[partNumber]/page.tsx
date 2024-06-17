@@ -1,4 +1,4 @@
-// src/app/product/[partNumber]/page.tsx
+// src/app/product/[partNumber]/page.tsx (обновленный)
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -11,6 +11,9 @@ import ProductDescription from '../../../components/ProductDescription';
 import PriceList from '../../../components/PriceList';
 import Specifications from '../../../components/Specifications';
 import PriceAlert from '../../../components/PriceAlert';
+import ReviewForm from '../../../components/ReviewForm';
+import ReviewList from '../../../components/ReviewList';
+import FavoriteButton from '../../../components/FavoriteButton';
 
 interface ProductDetailPageProps {
   params: {
@@ -73,8 +76,13 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
           </div>
         </div>
         <div className="mt-8">
+          <ReviewForm productId={product._id} />
         </div>
         <div className="mt-8">
+          <ReviewList productId={product._id} />
+        </div>
+        <div className="mt-8">
+          <FavoriteButton productId={product._id} />
         </div>
       </main>
       <Footer />
