@@ -1,36 +1,40 @@
-// src/pages/api/builds/index.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/mongoose';
-import Build, { IBuild } from '../../../models/SavedBuild';
+import SavedBuild from '@/models/SavedBuild';
+import { getAuth } from '@clerk/nextjs/server';
+import { ObjectId } from 'mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
+  const { userId } = getAuth(req);
 
-  if (req.method === 'POST') {
-    try {
-      const build: IBuild = new Build(req.body);
-      await build.save();
-      res.status(201).json({ success: true, data: build });
-    } catch (error) {
-      res.status(400).json({ success: false, error });
-    }
-  } else if (req.method === 'GET') {
-    try {
-      const { userId } = req.query;
-      const builds = await Build.find({ userId }).populate('components.productId');
-      res.status(200).json({ success: true, data: builds });
-    } catch (error) {
-      res.status(400).json({ success: false, error });
-    }
-  } else if (req.method === 'DELETE') {
-    try {
-      const { buildId } = req.query;
-      await Build.findByIdAndDelete(buildId);
-      res.status(200).json({ success: true });
-    } catch (error) {
-      res.status(400).json({ success: false, error });
-    }
-  } else {
-    res.status(405).json({ success: false, message: 'Method Not Allowed' });
+  if (!userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  switch (req.method) {
+    case 'GET':
+      const builds = await SavedBuild.find({ userId });
+      res.status(200).json(builds);
+      break;
+    case 'POST':
+      const { build } = req.body;
+      const newBuild = new SavedBuild({ userId, build });
+      await newBuild.save();
+      res.status(201).json(newBuild);
+      break;
+    case 'DELETE':
+      const { id } = req.body;
+      await SavedBuild.deleteOne({ _id: new ObjectId(id), userId });
+      res.status(200).json({ message: 'Build removed' });
+      break;
+    case 'PUT':
+      const { buildId, isPublic } = req.body;
+      await SavedBuild.updateOne({ _id: new ObjectId(buildId), userId }, { $set: { isPublic } });
+      res.status(200).json({ message: 'Build updated' });
+      break;
+    default:
+      res.setHeader('Allow', ['GET', 'POST', 'DELETE', 'PUT']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

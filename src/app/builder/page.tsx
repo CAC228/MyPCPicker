@@ -1,25 +1,10 @@
 // src/app/builder/page.tsx
-
-import React, { useState, useEffect } from 'react';
+"use client";
+import React from 'react';
 import { useBuild } from '../../context/BuildContext';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
-import { useUser } from '@clerk/nextjs';
-
-interface IBuildComponent {
-  componentType: string;
-  productId: string;
-}
-
-interface ISavedBuild {
-  _id: string;
-  userId: string;
-  build: IBuildComponent[];
-  createdAt: string;
-  updatedAt: string;
-  isPublic: boolean;
-}
 
 const componentTypes = [
   { name: 'Процессор', slug: 'cpu' },
@@ -40,28 +25,6 @@ const componentTypes = [
 
 const BuildPage = () => {
   const { build, removeFromBuild } = useBuild();
-  const { user } = useUser();
-  const [savedBuilds, setSavedBuilds] = useState<ISavedBuild[]>([]);
-
-  useEffect(() => {
-    if (user) {
-      fetch(`/api/saved-builds?userId=${user.id}`)
-        .then(response => response.json())
-        .then(data => setSavedBuilds(data));
-    }
-  }, [user]);
-
-  const handleSaveBuild = () => {
-    fetch('/api/saved-builds', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ build, userId: user.id }),
-    })
-      .then(response => response.json())
-      .then(data => setSavedBuilds([...savedBuilds, data]));
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -116,14 +79,6 @@ const BuildPage = () => {
             ))}
           </tbody>
         </table>
-        <div className="mt-4">
-          <button
-            onClick={handleSaveBuild}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Сохранить сборку
-          </button>
-        </div>
       </main>
       <Footer />
     </div>
