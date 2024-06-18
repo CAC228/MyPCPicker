@@ -29,7 +29,9 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`/api/products?category=${params.type}`);
+        const response = await axios.get(`/api/products?category=${params.type}`, {
+          timeout: 5000, // Установите тайм-аут 5 секунд
+        });
         setProducts(response.data);
         setFilteredProducts(response.data);
 

@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      const product = await Product.findOne({ 'specifications.partNumber': id }).lean();
+      const product = await Product.findById(id).lean();
 
       if (!product) {
         return res.status(404).json({ message: 'Product not found' });

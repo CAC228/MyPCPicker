@@ -15,7 +15,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <Link href={`/product/${product.specifications.partNumber}`} legacyBehavior>
+      <Link href={`/product/${product._id}`} legacyBehavior>
         <a className="block p-4 cursor-pointer">
           <div className="w-full h-96 flex items-center justify-center bg-gray-100">
             <img src={product.image_url} alt={product.name} className="object-contain h-full w-full" />
