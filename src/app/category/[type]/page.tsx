@@ -1,13 +1,14 @@
-// src/app/category/[type]/page.tsx
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useUser } from '@clerk/nextjs';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
 import { IProduct } from '../../../types';
 import ProductCard from '../../../components/ProductCard';
 import Filter from '../../../components/Filter';
 import Sort from '../../../components/Sort';
+import AddProductModal from '../../../components/AddProductModal';
 
 interface CategoryPageProps {
   params: {
@@ -16,6 +17,7 @@ interface CategoryPageProps {
 }
 
 const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
+  const { user } = useUser();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
@@ -24,6 +26,14 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
   const [maxPrice, setMaxPrice] = useState<number>(Infinity);
   const [sortType, setSortType] = useState<string>('name');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, Infinity]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user?.publicMetadata?.role === 'admin') {
+      setIsAdmin(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -105,10 +115,21 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
             onPriceChange={handlePriceChange}
           />
         </div>
+        <div className="flex justify-between mb-4">
+          <h1 className="text-3xl font-bold">Категория: {params.type}</h1>
+          {isAdmin && (
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Добавить продукт
+            </button>
+          )}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {filteredProducts.length > 0 ? (
             filteredProducts.map(product => (
-              <ProductCard key={product._id} product={product} />
+              <ProductCard key={product.specifications.partNumber} product={product} />
             ))
           ) : (
             <p className="text-center text-gray-500">Нет продуктов в этой категории</p>
@@ -116,6 +137,12 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
         </div>
       </main>
       <Footer />
+      {isAddModalOpen && (
+        <AddProductModal
+          category={params.type}
+          onClose={() => setIsAddModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

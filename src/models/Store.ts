@@ -1,4 +1,3 @@
-// src/models/Store.ts
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IStore extends Document {
@@ -7,6 +6,7 @@ export interface IStore extends Document {
 }
 
 const StoreSchema: Schema = new Schema({
+  _id: { type: Number, required: true }, // Изменено на Number
   name: { type: String, required: true },
   url: { type: String, required: true },
 });

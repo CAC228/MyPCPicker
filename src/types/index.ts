@@ -1,5 +1,6 @@
 // src/types.ts
 export interface PriceType {
+  _id: string;
   store_id: number;
   price: number;
   date: string;

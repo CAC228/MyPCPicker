@@ -1,4 +1,3 @@
-// src/app/product/[partNumber]/page.tsx
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -20,7 +19,7 @@ interface ProductDetailPageProps {
 
 const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
   const [product, setProduct] = useState<IProduct | null>(null);
-  const [prices, setPrices] = useState<(PriceType & { store: { name: string, url: string } })[]>([]);
+  const [prices, setPrices] = useState<(PriceType & { store: { _id: number, name: string, url: string } })[]>([]);
   const { addToBuild } = useBuild();
 
   useEffect(() => {
@@ -31,7 +30,16 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
 
         const pricesResponse = await axios.get(`/api/prices?partNumber=${params.partNumber}`);
         if (pricesResponse.status === 200) {
-          setPrices(pricesResponse.data);
+          const transformedPrices = pricesResponse.data.map((price: PriceType & { store: { _id: number, name: string, url: string } }) => ({
+            ...price,
+            store: {
+              _id: price.store._id,
+              name: price.store.name,
+              url: price.store.url,
+            },
+          }));
+          console.log('Transformed Prices:', transformedPrices); // Проверка данных
+          setPrices(transformedPrices);
         } else {
           setPrices([]);
         }
@@ -66,7 +74,7 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
             <Specifications specifications={product.specifications} />
           </div>
           <div className="md:col-span-2">
-            <PriceList prices={prices} />
+            <PriceList partNumber={params.partNumber} prices={prices} />
           </div>
           <div>
             <PriceAlert />
