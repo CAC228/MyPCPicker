@@ -24,7 +24,36 @@ export default function Home() {
               Процессоры
             </a>
           </Link>
-          {/* Добавьте другие категории здесь */}
+          <Link href="/category/cpu-cooler" legacyBehavior>
+            <a className="block bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 text-center">
+              Кулеры для процессоров
+            </a>
+          </Link>
+          <Link href="/category/motherboards" legacyBehavior>
+            <a className="block bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 text-center">
+              Материнские платы
+            </a>
+          </Link>
+          <Link href="/category/ram" legacyBehavior>
+            <a className="block bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 text-center">
+              Оперативная память
+            </a>
+          </Link>
+          <Link href="/category/storage" legacyBehavior>
+            <a className="block bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 text-center">
+              Накопители
+            </a>
+          </Link>
+          <Link href="/category/cases" legacyBehavior>
+            <a className="block bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 text-center">
+              Корпуса
+            </a>
+          </Link>
+          <Link href="/category/power-supplies" legacyBehavior>
+            <a className="block bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 text-center">
+              Блоки питания
+            </a>
+          </Link>
         </div>
       </main>
       <Footer />

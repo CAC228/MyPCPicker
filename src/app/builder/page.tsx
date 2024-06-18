@@ -1,10 +1,12 @@
 // src/app/builder/page.tsx
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { useBuild } from '../../context/BuildContext';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
+import axios from 'axios';
+import { useAuth } from '@clerk/nextjs';
 
 const componentTypes = [
   { name: 'Процессор', slug: 'cpu' },
@@ -25,6 +27,24 @@ const componentTypes = [
 
 const BuildPage = () => {
   const { build, removeFromBuild } = useBuild();
+  const { userId } = useAuth();
+  const [isPublic, setIsPublic] = useState(false);
+  const handleSaveBuild = async () => {
+    if (!userId) {
+      alert('Вы должны быть авторизованы, чтобы сохранить сборку.');
+      return;
+    }
+    try {
+      const buildData = Object.entries(build).map(([componentType, product]) => ({
+        componentType,
+        productId: product._id,
+      }));
+      await axios.post('/api/saved-builds', { build: buildData, isPublic });
+      alert('Сборка сохранена.');
+    } catch (error) {
+      console.error('Ошибка сохранения сборки:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -79,6 +99,23 @@ const BuildPage = () => {
             ))}
           </tbody>
         </table>
+        <div className="mt-4 flex items-center">
+          <button
+            onClick={handleSaveBuild}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Сохранить сборку
+          </button>
+          <label className="ml-4 flex items-center">
+            <input
+              type="checkbox"
+              checked={isPublic}
+              onChange={() => setIsPublic(!isPublic)}
+              className="mr-2"
+            />
+            Сделать сборку публичной
+          </label>
+        </div>
       </main>
       <Footer />
     </div>

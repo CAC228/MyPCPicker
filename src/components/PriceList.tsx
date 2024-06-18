@@ -34,7 +34,14 @@ const PriceList: React.FC<PriceListProps> = ({ partNumber, prices }) => {
       <ul className="list-disc pl-5">
         {prices.map((price) => (
           <li key={price._id} className="mb-2">
-            <span>{price.price} руб. - {price.store.name}</span>
+            <a
+              href={price.product_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              {price.price} руб. - {price.store.name}
+            </a>
             {isAdmin && (
               <button
                 className="ml-2 text-blue-500"

@@ -1,12 +1,13 @@
-// src/components/Navbar.tsx
 "use client";
 
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, HomeIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon, ChartBarIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, HomeIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon } from '@heroicons/react/24/solid';
 import { useBuild } from '../context/BuildContext';
 import { useAuth, UserButton } from '@clerk/nextjs';
+import SearchDropdown from './SearchDropdown';
+
 
 const categories = [
   { name: 'Видеокарты', slug: 'gpu', icon: 'nav-videocard-2023.png' },
@@ -20,15 +21,13 @@ const categories = [
 ];
 
 const navLinks = [
-  { name: 'Сборка', href: '/build', icon: <WrenchScrewdriverIcon className="w-5 h-5 mr-2" /> },
   {
     name: 'Продукты',
     href: '#',
     icon: <ChevronDownIcon className="w-5 h-5 mr-2" />,
     subMenu: categories
   },
-  { name: 'Руководства', href: '/guides', icon: <BookOpenIcon className="w-5 h-5 mr-2" /> },
-  { name: 'Готовые сборки', href: '/completed-builds', icon: <BuildingLibraryIcon className="w-5 h-5 mr-2" /> },
+
 ];
 
 export default function Navbar() {
@@ -52,7 +51,7 @@ export default function Navbar() {
               {link.subMenu ? (
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
-                    <Menu.Button className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                    <Menu.Button className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-white hover">
                       {link.icon}
                       {link.name}
                     </Menu.Button>
@@ -96,6 +95,7 @@ export default function Navbar() {
           ))}
         </div>
         <div className="flex items-center space-x-4">
+        <SearchDropdown />
           <Link href="#" legacyBehavior>
             <a className="text-lg">
               <MagnifyingGlassIcon className="w-6 h-6" />
@@ -107,7 +107,14 @@ export default function Navbar() {
               <span>Сборка ({Object.keys(build).length})</span>
             </a>
           </Link>
-          {!isSignedIn ? (
+          {isSignedIn ? (
+            <>
+              <Link href="/account" legacyBehavior>
+                <a className="text-lg bg-blue-500 px-3 py-2 rounded-md">Личный кабинет</a>
+              </Link>
+              <UserButton />
+            </>
+          ) : (
             <div className="flex items-center space-x-4">
               <Link href="/login" legacyBehavior>
                 <a className="text-lg">Вход</a>
@@ -116,8 +123,6 @@ export default function Navbar() {
                 <a className="text-lg">Регистрация</a>
               </Link>
             </div>
-          ) : (
-            <UserButton />
           )}
         </div>
       </div>
