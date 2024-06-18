@@ -1,13 +1,36 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/mongoose';
 import Product from '../../../models/Product';
+import Price from '../../../models/Price';
+import Store from '../../../models/Store';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
 
   const { id } = req.query;
 
-  if (req.method === 'PUT') {
+  if (req.method === 'GET') {
+    try {
+      const product = await Product.findOne({ 'specifications.partNumber': id }).lean();
+
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+
+      const prices = await Price.find({ product_id: product._id }).lean();
+      const stores = await Store.find({}).lean();
+
+      const pricesWithStoreInfo = prices.map(price => ({
+        ...price,
+        store: stores.find(store => store._id === price.store_id),
+      }));
+
+      res.status(200).json({ ...product, prices: pricesWithStoreInfo });
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      res.status(500).json({ message: 'Error fetching product' });
+    }
+  } else if (req.method === 'PUT') {
     const { name, category, brand, model, description, image_url, partNumber } = req.body;
 
     if (!name || !category || !brand || !model || !description || !image_url || !partNumber) {
