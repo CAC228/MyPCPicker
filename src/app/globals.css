@@ -41,3 +41,22 @@ input, select {
 h1 {
   @apply text-3xl font-bold mb-4;
 }
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  width: 100%;
+}
+
+.menu-item img {
+  width: 40px;
+  height: 40px;
+}
+
+.menu-item span {
+  display: block;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}

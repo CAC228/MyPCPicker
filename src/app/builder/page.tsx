@@ -1,6 +1,6 @@
 // src/app/builder/page.tsx
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBuild } from '../../context/BuildContext';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
@@ -29,6 +29,22 @@ const BuildPage = () => {
   const { build, removeFromBuild } = useBuild();
   const { userId } = useAuth();
   const [isPublic, setIsPublic] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    const calculateTotalPrice = () => {
+      let total = 0;
+      for (const key in build) {
+        if (build[key] && build[key].prices.length > 0) {
+          total += build[key].prices[0].price;
+        }
+      }
+      setTotalPrice(total);
+    };
+
+    calculateTotalPrice();
+  }, [build]);
+
   const handleSaveBuild = async () => {
     if (!userId) {
       alert('Вы должны быть авторизованы, чтобы сохранить сборку.');
@@ -99,22 +115,27 @@ const BuildPage = () => {
             ))}
           </tbody>
         </table>
-        <div className="mt-4 flex items-center">
-          <button
-            onClick={handleSaveBuild}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Сохранить сборку
-          </button>
-          <label className="ml-4 flex items-center">
-            <input
-              type="checkbox"
-              checked={isPublic}
-              onChange={() => setIsPublic(!isPublic)}
-              className="mr-2"
-            />
-            Сделать сборку публичной
-          </label>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-2xl font-bold">
+            Итого: {totalPrice} руб.
+          </div>
+          <div className="flex items-center">
+            <button
+              onClick={handleSaveBuild}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Сохранить сборку
+            </button>
+            <label className="ml-4 flex items-center">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={() => setIsPublic(!isPublic)}
+                className="mr-2"
+              />
+              Сделать сборку публичной
+            </label>
+          </div>
         </div>
       </main>
       <Footer />

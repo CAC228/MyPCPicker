@@ -32,7 +32,7 @@ const SearchDropdown: React.FC = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative text-black">
       <input
         type="text"
         className="border p-2 rounded"

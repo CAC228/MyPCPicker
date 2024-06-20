@@ -12,6 +12,7 @@ import Specifications from '../../../components/Specifications';
 import PriceAlert from '../../../components/PriceAlert';
 import { useUser } from '@clerk/nextjs';
 import ReviewModal from '../../../components/ReviewModal';
+import { useComparison } from '../../../context/ComparisonContext';
 
 interface ProductDetailPageProps {
   params: {
@@ -28,6 +29,7 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
   const userId = user?.id;
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [currentReview, setCurrentReview] = useState<IReview | null>(null);
+  const { addToComparison } = useComparison();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -113,6 +115,12 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
     }
   };
 
+  const handleCompare = () => {
+    if (product) {
+      addToComparison(product);
+    }
+  };
+
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -128,6 +136,9 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
         <div className="flex justify-between items-center">
           <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleAddToFavorites}>
             Добавить в избранное
+          </button>
+          <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={handleCompare}>
+            Сравнить
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">

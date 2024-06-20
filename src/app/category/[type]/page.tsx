@@ -16,6 +16,17 @@ interface CategoryPageProps {
   };
 }
 
+const categoryTranslations = {
+  gpu: 'Видеокарты',
+  cpu: 'Процессоры',
+  motherboards: 'Материнские платы',
+  ram: 'Оперативная память',
+  storage: 'Накопители',
+  powerSupplies: 'Блоки питания',
+  cases: 'Корпуса',
+  cpuCoolers: 'Охлаждение CPU',
+};
+
 const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
   const { user } = useUser();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -116,7 +127,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ params }) => {
           />
         </div>
         <div className="flex justify-between mb-4">
-          <h1 className="text-3xl font-bold">Категория: {params.type}</h1>
+          <h1 className="text-3xl font-bold">Категория: {categoryTranslations[params.type] || params.type}</h1>
           {isAdmin && (
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded"

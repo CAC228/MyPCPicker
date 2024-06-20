@@ -7,7 +7,8 @@ import { ChevronDownIcon, HomeIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, 
 import { useBuild } from '../context/BuildContext';
 import { useAuth, UserButton } from '@clerk/nextjs';
 import SearchDropdown from './SearchDropdown';
-
+import { useComparison } from '../context/ComparisonContext';
+import { ScaleIcon } from '@heroicons/react/24/outline';
 
 const categories = [
   { name: 'Видеокарты', slug: 'gpu', icon: 'nav-videocard-2023.png' },
@@ -27,13 +28,13 @@ const navLinks = [
     icon: <ChevronDownIcon className="w-5 h-5 mr-2" />,
     subMenu: categories
   },
-
 ];
 
 export default function Navbar() {
   const { build } = useBuild();
   const { isSignedIn } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { comparisonList } = useComparison();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -66,16 +67,16 @@ export default function Navbar() {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute z-10 mt-2 w-72 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-700">
-                      <div className="p-4 grid grid-cols-2 gap-4">
+                    <div className="p-26 grid grid-cols-26 ">
                         {link.subMenu.map((category) => (
                           <Menu.Item key={category.slug}>
                             {({ active }) => (
                               <Link href={`/category/${category.slug}`} legacyBehavior>
-                                <a className={`flex items-center p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}>
-                                  <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
-                                  <span className="text-white">{category.name}</span>
-                                </a>
-                              </Link>
+                              <a className={`flex items-center justify-between p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}>
+                                <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
+                                <span className="text-white">{category.name}</span>
+                              </a>
+                            </Link>
                             )}
                           </Menu.Item>
                         ))}
@@ -95,7 +96,7 @@ export default function Navbar() {
           ))}
         </div>
         <div className="flex items-center space-x-4">
-        <SearchDropdown />
+          <SearchDropdown />
           <Link href="#" legacyBehavior>
             <a className="text-lg">
               <MagnifyingGlassIcon className="w-6 h-6" />
@@ -105,6 +106,12 @@ export default function Navbar() {
             <a className="flex items-center space-x-2 text-lg">
               <WrenchScrewdriverIcon className="w-6 h-6" />
               <span>Сборка ({Object.keys(build).length})</span>
+            </a>
+          </Link>
+          <Link href="/compare" legacyBehavior>
+            <a className="flex items-center space-x-2 text-lg">
+              <ScaleIcon className="w-6 h-6" />
+              <span>Сравнение ({comparisonList.length})</span>
             </a>
           </Link>
           {isSignedIn ? (
