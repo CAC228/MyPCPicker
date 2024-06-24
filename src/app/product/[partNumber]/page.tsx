@@ -35,7 +35,8 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
     const fetchProduct = async () => {
       try {
         const productResponse = await axios.get(`/api/products?partNumber=${params.partNumber}`);
-        setProduct(productResponse.data[0]);
+        const fetchedProduct = productResponse.data[0];
+        setProduct(fetchedProduct);
 
         const pricesResponse = await axios.get(`/api/prices?partNumber=${params.partNumber}`);
         if (pricesResponse.status === 200) {
@@ -52,7 +53,7 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
           setPrices([]);
         }
 
-        const reviewsResponse = await axios.get(`/api/reviews?productId=${productResponse.data[0]._id}`);
+        const reviewsResponse = await axios.get(`/api/reviews?productId=${fetchedProduct._id}`);
         setReviews(reviewsResponse.data);
       } catch (error) {
         console.error('Error fetching product data:', error);
@@ -83,6 +84,7 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
         productId: product?._id,
         rating,
         comment,
+        userId, // Передача userId в запросе
       });
       setReviews([...reviews, response.data]);
       setIsReviewModalOpen(false);
@@ -129,12 +131,12 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow container mx-auto p-4 md:flex-row">
-        <div className="flex md:flex-cols  gap-6">
+        <div className="flex md:flex-cols gap-6">
           <ProductImage imageUrl={product.image_url} name={product.name} />
           <div className="md:flex-row">
-          <ProductDescription name={product.name} description={product.description} handleAddToBuild={handleAddToBuild} />
-          <Specifications specifications={product.specifications} />
-          <PriceList partNumber={params.partNumber} prices={prices} />
+            <ProductDescription name={product.name} description={product.description} handleAddToBuild={handleAddToBuild} />
+            <Specifications specifications={product.specifications} />
+            <PriceList partNumber={params.partNumber} prices={prices} />
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -146,11 +148,8 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div>
-            
-          </div>
-          <div className="md:col-span-2">
-          </div>
+          <div></div>
+          <div className="md:col-span-2"></div>
           <div>
             <PriceAlert />
           </div>

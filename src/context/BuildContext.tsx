@@ -1,4 +1,3 @@
-// context/BuildContext.tsx
 "use client";
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { ProductType } from '../types';
@@ -7,27 +6,32 @@ type BuildContextType = {
   build: { [key: string]: ProductType };
   addToBuild: (product: ProductType) => void;
   removeFromBuild: (type: string) => void;
+  setBuild: (build: { [key: string]: ProductType }) => void;
 };
 
 const BuildContext = createContext<BuildContextType | undefined>(undefined);
 
 export const BuildProvider = ({ children }: { children: ReactNode }) => {
-  const [build, setBuild] = useState<{ [key: string]: ProductType }>({});
+  const [build, setBuildState] = useState<{ [key: string]: ProductType }>({});
 
   const addToBuild = (product: ProductType) => {
-    setBuild((prevBuild) => ({ ...prevBuild, [product.category]: product }));
+    setBuildState((prevBuild) => ({ ...prevBuild, [product.category]: product }));
   };
 
   const removeFromBuild = (category: string) => {
-    setBuild((prevBuild) => {
+    setBuildState((prevBuild) => {
       const newBuild = { ...prevBuild };
       delete newBuild[category];
       return newBuild;
     });
   };
 
+  const setBuild = (newBuild: { [key: string]: ProductType }) => {
+    setBuildState(newBuild);
+  };
+
   return (
-    <BuildContext.Provider value={{ build, addToBuild, removeFromBuild }}>
+    <BuildContext.Provider value={{ build, addToBuild, removeFromBuild, setBuild }}>
       {children}
     </BuildContext.Provider>
   );

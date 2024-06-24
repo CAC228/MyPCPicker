@@ -3,12 +3,11 @@
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, HomeIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, BookOpenIcon, BuildingLibraryIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, MagnifyingGlassIcon, WrenchScrewdriverIcon, ScaleIcon } from '@heroicons/react/24/solid';
 import { useBuild } from '../context/BuildContext';
 import { useAuth, UserButton } from '@clerk/nextjs';
 import SearchDropdown from './SearchDropdown';
 import { useComparison } from '../context/ComparisonContext';
-import { ScaleIcon } from '@heroicons/react/24/outline';
 
 const categories = [
   { name: 'Видеокарты', slug: 'gpu', icon: 'nav-videocard-2023.png' },
@@ -26,7 +25,12 @@ const navLinks = [
     name: 'Каталог',
     href: '#',
     icon: <ChevronDownIcon className="w-5 h-5 mr-2" />,
-    subMenu: categories
+    subMenu: categories,
+  },
+  {
+    name: 'Готовые сборки',
+    href: '/builds',
+    icon: <ChevronDownIcon className="w-5 h-5 mr-2" />,
   },
 ];
 
@@ -67,16 +71,16 @@ export default function Navbar() {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute z-10 mt-2 w-72 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-700">
-                    <div className="p-26 grid grid-cols-26 ">
+                      <div className="p-2 grid grid-cols-1">
                         {link.subMenu.map((category) => (
                           <Menu.Item key={category.slug}>
                             {({ active }) => (
                               <Link href={`/category/${category.slug}`} legacyBehavior>
-                              <a className={`flex items-center justify-between p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}>
-                                <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
-                                <span className="text-white">{category.name}</span>
-                              </a>
-                            </Link>
+                                <a className={`flex items-center justify-between p-2 rounded-md ${active ? 'bg-gray-700' : ''}`}>
+                                  <img src={`//cdna.pcpartpicker.com/static/forever/img/${category.icon}`} alt={category.name} className="w-10 h-10 mr-2" />
+                                  <span className="text-white">{category.name}</span>
+                                </a>
+                              </Link>
                             )}
                           </Menu.Item>
                         ))}
